@@ -2,7 +2,9 @@
 #define GPMF_GPMF_H
 
 #include <memory>
+#include <vector>
 #include "MP4.hpp"
+#include "klvs.hpp"
 
 namespace GPMF
 {
@@ -14,6 +16,7 @@ public:
 
 private:
 	std::shared_ptr<MP4::MP4> 		    mp4_;
+    std::vector<std::shared_ptr<klv>>   payloads_;
 };
 
 }
