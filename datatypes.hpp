@@ -11,16 +11,14 @@ namespace GPMF
 
 // ********* DATA TYPES *********
 
-/*
-typedef struct sampleType
+typedef struct gpsType
 {
-    uint32_t    ID;
-    uint32_t    duration;
-    uint32_t    time;
-    uint32_t    currentTime;
-    uint32_t    dataSize;
-} sampleType;
-*/
+    int32_t latitude;
+    int32_t longitude;
+    int32_t altitude;
+    int32_t speed2D;
+    int32_t speed3D;
+} gpsType;
 
 namespace datablock
 

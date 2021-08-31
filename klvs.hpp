@@ -20,5 +20,6 @@
         #include "klvs/SCAL.hpp"
         #include "klvs/ACCL.hpp"
         #include "klvs/GYRO.hpp"
+        #include "klvs/GPS5.hpp"
 
 #endif

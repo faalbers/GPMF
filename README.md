@@ -1,6 +1,8 @@
 # GoPro GPMF format Reader/Parser/Writer
 [GPMF structure](https://github.com/gopro/gpmf-parser#gpmf-introduction) (link to GPMF structure document)
 
+[GPMF structure](https://gopro.github.io/gpmf-parser/) (link to GPMF structure document)
+
 ## - Finding the metadata track that has the GPMF data
 Find the track's hdlr atom and check if the componentSubType = "meta". There can be several tracks with meta data. GPMF is meta data.
 * __/moov/trak/mdia/hdlr__
