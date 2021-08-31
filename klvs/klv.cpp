@@ -99,6 +99,7 @@ std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t 
     else if ( key == "TSMP" ) newAtom = std::make_shared<TSMP>(filePath_, nextFilePos, pathParent);
     else if ( key == "STNM" ) newAtom = std::make_shared<STNM>(filePath_, nextFilePos, pathParent);
     else if ( key == "TYPE" ) newAtom = std::make_shared<TYPE>(filePath_, nextFilePos, pathParent);
+    else if ( key == "TMPC" ) newAtom = std::make_shared<TMPC>(filePath_, nextFilePos, pathParent);
     else if ( key == "SIUN" ) newAtom = std::make_shared<SIUN>(filePath_, nextFilePos, pathParent);
     else if ( key == "UNIT" ) newAtom = std::make_shared<UNIT>(filePath_, nextFilePos, pathParent);
     else if ( key == "SCAL" ) newAtom = std::make_shared<SCAL>(filePath_, nextFilePos, pathParent);

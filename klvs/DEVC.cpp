@@ -10,7 +10,7 @@ GPMF::DEVC::DEVC(std::string filePath, uint64_t filePos, std::string pathParent)
 void GPMF::DEVC::printData(bool fullLists)
 {
     int levelCount = std::count(path_.begin(), path_.end(), '/');
-    std::cout << path_ << " (<type> <size> <repeat>) : main container" << std::endl;
+    std::cout << path_ << " (<datatype> <datasize> <repeat>) : main container" << std::endl;
 }
 
 void GPMF::DEVC::printHierarchyData(bool fullLists)
