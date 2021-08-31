@@ -1,0 +1,3 @@
+[submodule "extern/MP4"]
+	path = extern/MP4
+	url = https://github.com/faalbers/MP4.git

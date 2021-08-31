@@ -1,0 +1,7 @@
+/build
+*.json
+*.mp4
+MP4structure_*
+GPMFstructure_*
+gpmf-parser-log-*
+test_*
