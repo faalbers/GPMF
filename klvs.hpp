@@ -13,6 +13,7 @@
     #include "klvs/STRM.hpp"
         #include "klvs/TSMP.hpp"
         #include "klvs/STNM.hpp"
+        #include "klvs/TYPE.hpp"
         #include "klvs/SIUN.hpp"
         #include "klvs/UNIT.hpp"
         #include "klvs/SCAL.hpp"
