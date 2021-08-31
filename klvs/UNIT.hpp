@@ -1,5 +1,5 @@
-#ifndef GPMF_SIUN_H
-#define GPMF_SIUN_H
+#ifndef GPMF_UNIT_H
+#define GPMF_UNIT_H
 #include <string>
 #include <memory>
 #include <vector>
@@ -8,10 +8,10 @@
 namespace GPMF
 {
 
-class SIUN : public klv
+class UNIT : public klv
 {
 public:
-    SIUN(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    UNIT(std::string filePath, uint64_t filePos, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

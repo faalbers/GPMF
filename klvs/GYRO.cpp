@@ -38,9 +38,9 @@ void GPMF::GYRO::printData(bool fullLists)
 {
     int levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
-    std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : gyro data" << std::endl;
+    std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : gyroscope samples" << std::endl;
     int index = 1;
-    std::cout << dataIndent << "[#] (x, y, z)\n";
+    std::cout << dataIndent << "[#] (z,x,y)\n";
     if ( fullLists || (!fullLists && samples.size() <= 6) ) {
         for ( auto sample : samples ) {
             std::cout << dataIndent << "[" << index << "] ( "

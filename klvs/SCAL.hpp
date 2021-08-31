@@ -2,6 +2,7 @@
 #define GPMF_SCAL_H
 #include <string>
 #include <memory>
+#include <vector>
 #include "klv.hpp"
 
 namespace GPMF
@@ -15,8 +16,8 @@ public:
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);
 
-    static std::string  key;
-    int16_t             denominator;
+    static std::string      key;
+    std::vector<int32_t>    denominators;
 };
 
 }

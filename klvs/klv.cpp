@@ -68,7 +68,8 @@ void GPMF::klv::printHierarchy(int pathWith, int valLevel)
 void GPMF::klv::printData(bool fullLists)
 {
     int levelCount = std::count(path_.begin(), path_.end(), '/');
-    std::cout << path_ << " (<type> <size> <repeat>) : klv not defined yet" << std::endl;
+    std::string dataIndent = std::string((levelCount)*5+1, ' ');
+    std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : klv not defined yet" << std::endl;
 }
 
 void GPMF::klv::printHierarchyData(bool fullLists)
@@ -93,8 +94,12 @@ std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t 
 
     if ( key == "DEVC" ) newAtom = std::make_shared<DEVC>(filePath_, nextFilePos, pathParent);
     else if ( key == "DVNM" ) newAtom = std::make_shared<DVNM>(filePath_, nextFilePos, pathParent);
+    else if ( key == "TICK" ) newAtom = std::make_shared<TICK>(filePath_, nextFilePos, pathParent);
     else if ( key == "STRM" ) newAtom = std::make_shared<STRM>(filePath_, nextFilePos, pathParent);
+    else if ( key == "TSMP" ) newAtom = std::make_shared<TSMP>(filePath_, nextFilePos, pathParent);
+    else if ( key == "STNM" ) newAtom = std::make_shared<STNM>(filePath_, nextFilePos, pathParent);
     else if ( key == "SIUN" ) newAtom = std::make_shared<SIUN>(filePath_, nextFilePos, pathParent);
+    else if ( key == "UNIT" ) newAtom = std::make_shared<UNIT>(filePath_, nextFilePos, pathParent);
     else if ( key == "SCAL" ) newAtom = std::make_shared<SCAL>(filePath_, nextFilePos, pathParent);
     else if ( key == "ACCL" ) newAtom = std::make_shared<ACCL>(filePath_, nextFilePos, pathParent);
     else if ( key == "GYRO" ) newAtom = std::make_shared<GYRO>(filePath_, nextFilePos, pathParent);
