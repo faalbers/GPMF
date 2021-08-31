@@ -11,6 +11,9 @@ int main(int argc, char* argv[])
 
     std::cout << "\n**** TEST GPMF ****\n\n";
     
+    //gpmf.printHierarchy();
+    gpmf.printHierarchyData();
+    
     std::cout << "\n**** END ****\n\n";
 
     return 0;

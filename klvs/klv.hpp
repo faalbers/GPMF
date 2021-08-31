@@ -14,12 +14,20 @@ class klv
 public:
     klv(std::string filePath, uint64_t filePos, std::string pathParent = "/");
 
+    void printHierarchy(int pathWith = 35, int valLevel = 10);
+    virtual void printData(bool fullLists = false);
+    virtual void printHierarchyData(bool fullLists = false);
+
     std::string key;
     uint8_t     dataType;
     int64_t     sampleSize;
     int64_t	    dataRepeat;
 
 protected:
+    friend class GPMF;
+    static std::shared_ptr<klv> makeKlv_(std::string filePath, int64_t nextFilePos, std::string pathParent = "/");
+    int                         nestLevel_(int level);
+
     //int64_t                             size_;
     std::string                         filePath_;
     std::string                         path_;

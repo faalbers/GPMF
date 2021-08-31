@@ -8,7 +8,7 @@ execute_process(COMMAND git submodule update --init --recursive
 
 #add_compile_definitions(MP4_PARSE_PATH)
 #add_compile_definitions(MP4_PARSE_DATA)
-add_compile_definitions(GPMF_PARSE_PATH)
+#add_compile_definitions(GPMF_PARSE_PATH)
 #add_compile_definitions(GPMF_PARSE_DATA)
 
 add_subdirectory(extern/MP4)
