@@ -20,14 +20,162 @@ GPMF::GPMF::GPMF(std::string fileName)
     if ( GPMFtrack == nullptr )
         throw std::runtime_error("GPMF: Can't find GPMF track in file !");
     
-    //auto samples = GPMFtrack->getSamples();
+    auto samples = GPMFtrack->getSamples();
+    DEVC *currentPayload = nullptr;
     for ( auto chunk : GPMFtrack->getChunks() ) {
         #ifdef GPMF_PARSE_PATH
         std::cout << "PAYLOAD: " << chunk.ID << std::endl;
         #endif
-        //payloads_.push_back(std::make_shared<klv>(mp4_->filePath, chunk.dataOffset));
-        payloads_.push_back( klv::makeKlv_(mp4_->filePath, chunk.dataOffset) );
+        auto payload = klv::makeKlv_(mp4_->filePath, chunk.dataOffset);
+        currentPayload = (DEVC *) payload.get();
+        for ( auto sample : samples ) {
+            if ( sample.ID == chunk.currentSampleID ) {
+                currentPayload->timeScale = GPMFtrack->getMediaTimeScale();
+                currentPayload->currentTime = sample.currentTime;
+                currentPayload->duration = sample.duration;
+            }
+        }
+        payloads_.push_back( payload );
     }
+}
+
+std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
+{
+    int index = 1;
+    DEVC *currentPayload = nullptr;
+    sampleEntryType sampleEntry;
+    std::vector<sampleType> accelerations;
+    for ( auto payload : payloads_ ) {
+        currentPayload = (DEVC *) payload.get();
+        STRM *stream;
+        ACCL *accel;
+        for ( auto strm : getTypeKlvs<STRM>(payload.get()) )
+            for ( auto accl : getTypeKlvs<ACCL>(strm) ) {
+                stream = strm;
+                accel = accl;
+            }
+        SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
+        SIUN *siun = getTypeKlvs<SIUN>(stream)[0];
+        float sampleDeltaTimeF = (float) currentPayload->duration/accel->samples.size();
+        float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
+        float sampleTimeF = (float) currentPayload->currentTime;
+        for ( auto sample : accel->samples ) {
+            sampleType acceleration;
+
+            sampleEntry.value = sampleTimeF / currentPayload->timeScale;
+            sampleEntry.unit = "sec";
+            sampleEntry.info = "current time";
+            acceleration.time = sampleEntry;
+
+            sampleEntry.value = sampleDuration;
+            sampleEntry.unit = "sec";
+            sampleEntry.info = "duration";
+            acceleration.duration = sampleEntry;
+
+            sampleEntry.value = (float) sample[0] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "up/down";
+            acceleration.entries.push_back(sampleEntry);
+
+            sampleEntry.value = (float) sample[1] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "right/left";
+            acceleration.entries.push_back(sampleEntry);
+
+            sampleEntry.value = (float) sample[2] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "forward/back";
+            acceleration.entries.push_back(sampleEntry);
+            
+            accelerations.push_back(acceleration);
+
+            sampleTimeF += sampleDeltaTimeF;
+        }
+        index++;
+    }
+    return accelerations;
+}
+
+std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
+{
+    int index = 1;
+    DEVC *currentPayload = nullptr;
+    sampleEntryType sampleEntry;
+    std::vector<sampleType> gyroscopes;
+    for ( auto payload : payloads_ ) {
+        currentPayload = (DEVC *) payload.get();
+        STRM *stream;
+        GYRO *gyrosc;
+        for ( auto strm : getTypeKlvs<STRM>(payload.get()) )
+            for ( auto gyro : getTypeKlvs<GYRO>(strm) ) {
+                stream = strm;
+                gyrosc = gyro;
+            }
+        SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
+        SIUN *siun = getTypeKlvs<SIUN>(stream)[0];
+        float sampleDeltaTimeF = (float) currentPayload->duration/gyrosc->samples.size();
+        float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
+        float sampleTimeF = (float) currentPayload->currentTime;
+        for ( auto sample : gyrosc->samples ) {
+            sampleType gyroscope;
+
+            sampleEntry.value = sampleTimeF / currentPayload->timeScale;
+            sampleEntry.unit = "sec";
+            sampleEntry.info = "current time";
+            gyroscope.time = sampleEntry;
+
+            sampleEntry.value = sampleDuration;
+            sampleEntry.unit = "sec";
+            sampleEntry.info = "duration";
+            gyroscope.duration = sampleEntry;
+
+            sampleEntry.value = (float) sample[0] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "z rotation";
+            gyroscope.entries.push_back(sampleEntry);
+
+            sampleEntry.value = (float) sample[1] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "x rotation";
+            gyroscope.entries.push_back(sampleEntry);
+
+            sampleEntry.value = (float) sample[2] / scal->denominators[0];
+            sampleEntry.unit = siun->units[0];
+            sampleEntry.info = "y rotation";
+            gyroscope.entries.push_back(sampleEntry);
+            
+            gyroscopes.push_back(gyroscope);
+
+            sampleTimeF += sampleDeltaTimeF;
+        }
+        index++;
+    }
+    return gyroscopes;
+}
+
+std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
+{
+    int index = 1;
+    DEVC *currentPayload = nullptr;
+    sampleEntryType sampleEntry;
+    std::vector<sampleType> gyroscopes;
+    for ( auto payload : payloads_ ) {
+        currentPayload = (DEVC *) payload.get();
+        STRM *stream;
+        index++;
+    }
+    return gyroscopes;
+}
+
+std::vector<std::shared_ptr<GPMF::klv>> GPMF::GPMF::getKlvs(std::string findKey, klv *parent)
+{
+    std::vector<std::shared_ptr<klv>> found;
+    if ( parent != nullptr ) parent->getKlvs_(findKey, found);
+    else for ( auto payload : payloads_ ) {
+        if ( payload->key == findKey ) found.push_back(payload);
+        payload->getKlvs_(findKey, found);
+    }
+    return found;
 }
 
 void GPMF::GPMF::printHierarchy()

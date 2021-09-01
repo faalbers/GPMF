@@ -16,14 +16,19 @@ GPMF::GPS5::GPS5(std::string filePath, uint64_t filePos, std::string pathParent)
     if ( fileStream.fail() ) throw std::runtime_error("GPS5 klv can not parse file: "+filePath);
     fileStream.seekg(fileDataPos_, fileStream.beg);
 
-    gpsType gpsEntry;
+    int32_t val;
     for ( int i = (int) dataRepeat; i > 0; i-- ) {
-        fileStream.read((char *) &gpsEntry, sizeof(gpsEntry));
-        gpsEntry.latitude = _byteswap_ulong(gpsEntry.latitude);
-        gpsEntry.longitude = _byteswap_ulong(gpsEntry.longitude);
-        gpsEntry.altitude = _byteswap_ulong(gpsEntry.altitude);
-        gpsEntry.speed2D = _byteswap_ulong(gpsEntry.speed2D);
-        gpsEntry.speed3D = _byteswap_ulong(gpsEntry.speed3D);
+        std::vector<int32_t> gpsEntry;
+        fileStream.read((char *) &val, sizeof(val));
+        gpsEntry.push_back(_byteswap_ulong(val));
+        fileStream.read((char *) &val, sizeof(val));
+        gpsEntry.push_back(_byteswap_ulong(val));
+        fileStream.read((char *) &val, sizeof(val));
+        gpsEntry.push_back(_byteswap_ulong(val));
+        fileStream.read((char *) &val, sizeof(val));
+        gpsEntry.push_back(_byteswap_ulong(val));
+        fileStream.read((char *) &val, sizeof(val));
+        gpsEntry.push_back(_byteswap_ulong(val));
         gps.push_back(gpsEntry);
     }
 
@@ -40,32 +45,32 @@ void GPMF::GPS5::printData(bool fullLists)
     if ( fullLists || (!fullLists && gps.size() <= 6) ) {
         for ( auto gpsEntry : gps ) {
             std::cout << dataIndent << "[" << index << "] ( "
-                << gpsEntry.latitude
-                << ", " << gpsEntry.longitude
-                << ", " << gpsEntry.altitude
-                << ", " << gpsEntry.speed2D
-                << ", " << gpsEntry.speed3D
+                << gpsEntry[0]
+                << ", " << gpsEntry[1]
+                << ", " << gpsEntry[2]
+                << ", " << gpsEntry[3]
+                << ", " << gpsEntry[4]
                 << " )" << std::endl;
             index++;
         }
     } else {
         for ( index = 0 ; index < 3; index++ ) {
             std::cout << dataIndent << "[" << index+1 << "] ( "
-                << gps[index].latitude
-                << ", " << gps[index].longitude
-                << ", " << gps[index].altitude
-                << ", " << gps[index].speed2D
-                << ", " << gps[index].speed3D
+                << gps[index][0]
+                << ", " << gps[index][1]
+                << ", " << gps[index][2]
+                << ", " << gps[index][3]
+                << ", " << gps[index][4]
                 << " )" << std::endl;
         }
         std::cout << dataIndent << "     ...\n";
         for ( index = gps.size()-3 ; index < gps.size(); index++ ) {
             std::cout << dataIndent << "[" << index+1 << "] ( "
-                << gps[index].latitude
-                << ", " << gps[index].longitude
-                << ", " << gps[index].altitude
-                << ", " << gps[index].speed2D
-                << ", " << gps[index].speed3D
+                << gps[index][0]
+                << ", " << gps[index][1]
+                << ", " << gps[index][2]
+                << ", " << gps[index][3]
+                << ", " << gps[index][4]
                 << " )" << std::endl;
         }
     }

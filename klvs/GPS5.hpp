@@ -18,8 +18,8 @@ public:
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);
 
-    static std::string      key;
-    std::vector<gpsType>    gps;
+    static std::string                  key;
+    std::vector<std::vector<int32_t>>   gps;
 };
 
 }

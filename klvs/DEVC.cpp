@@ -1,10 +1,14 @@
 #include "DEVC.hpp"
-#include "../klvs.hpp"
 #include <iostream>
 
 GPMF::DEVC::DEVC(std::string filePath, uint64_t filePos, std::string pathParent)
     : klv(filePath, filePos, pathParent)
 {
+}
+
+std::vector<GPMF::STRM *> GPMF::DEVC::getStreams()
+{
+    return getTypeKlvs<STRM>();
 }
 
 void GPMF::DEVC::printData(bool fullLists)

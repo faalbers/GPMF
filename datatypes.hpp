@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 // REMEMBER: they are 32 bit aligned !
 
@@ -11,14 +12,19 @@ namespace GPMF
 
 // ********* DATA TYPES *********
 
-typedef struct gpsType
+typedef struct sampleEntryType
 {
-    int32_t latitude;
-    int32_t longitude;
-    int32_t altitude;
-    int32_t speed2D;
-    int32_t speed3D;
-} gpsType;
+    float       value;
+    std::string unit;
+    std::string info;
+} sampleEntryType;
+
+typedef struct sampleType
+{
+    std::vector<sampleEntryType>    entries;
+    sampleEntryType                 time;
+    sampleEntryType                 duration;
+} sampleType;
 
 namespace datablock
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include "klv.hpp"
+#include "STRM.hpp"
 
 namespace GPMF
 {
@@ -12,10 +13,15 @@ class DEVC : public klv
 public:
     DEVC(std::string filePath, uint64_t filePos, std::string pathParent = "/");
 
+    std::vector<STRM *>  getStreams();
+
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);
 
     static std::string  key;
+    uint32_t            timeScale;
+    uint32_t            currentTime;
+    uint32_t            duration;
 };
 
 }

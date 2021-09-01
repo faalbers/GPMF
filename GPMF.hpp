@@ -16,6 +16,19 @@ public:
 
     void     printHierarchy();                              // Hierarchy print out of all klvs in file
     void     printHierarchyData(bool fullLists = false);    // Data print out. Only data that is handled so far
+    
+    std::vector<sampleType> getAcceleration();
+    std::vector<sampleType> getGyroscope();
+    std::vector<sampleType> getGPS();
+    
+    std::vector<std::shared_ptr<klv>>  getKlvs(std::string findKey, klv *parent = nullptr);
+    template<typename T>
+    std::vector<T *>     getTypeKlvs(klv *parent = nullptr)
+    {
+        std::vector<T *> foundTypeKlvs;
+        for( auto foundKlv : getKlvs(T::key, parent) ) foundTypeKlvs.push_back((T *) foundKlv.get());
+        return foundTypeKlvs;
+    }
 
 private:
     int                                 nestLevel();
