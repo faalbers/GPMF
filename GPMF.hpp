@@ -20,6 +20,7 @@ public:
     std::vector<sampleType> getAcceleration();
     std::vector<sampleType> getGyroscope();
     std::vector<sampleType> getGPS();
+    void                    exportGPStoGPX(std::string fileName);
     
     std::vector<std::shared_ptr<klv>>  getKlvs(std::string findKey, klv *parent = nullptr);
     template<typename T>

@@ -1,6 +1,8 @@
 #include "GPMF.hpp"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+
 
 GPMF::GPMF::GPMF(std::string fileName)
     : mp4_(new MP4::MP4(fileName))
@@ -219,6 +221,37 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
         }
     }
     return GPSs;
+}
+
+void GPMF::GPMF::exportGPStoGPX(std::string fileName)
+{
+    std::ofstream out(fileName+".gpx", std::ios::binary);
+    out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    out << "<gpx>\n\t<trk>\n\t\t<trkseg>\n";
+    auto sampels = getGPS();
+    int fixedWith = 10;
+    float fracseconds;
+    int seconds, minutes, hours;
+    for ( auto sampel : sampels ) {
+        seconds = (int) sampel.time.value;
+        fracseconds = sampel.time.value - (float) seconds;
+        minutes = seconds / 60;
+        hours = minutes / 60;
+        seconds %= 60;
+        minutes %= 60;
+        hours %= 24;
+        fracseconds += seconds;
+        //out << std::setprecision(9);
+        out << std::fixed << std::setprecision(7);
+        out << "\t\t\t<trkpt lat=\"" << sampel.entries[0].value;
+        out << "\" lon=\"" << sampel.entries[1].value;
+        out << "\"><time>2007-01-01T" << std::setfill('0')
+        << std::setw(2) << hours << ":"
+        << std::setw(2) << minutes << ":" 
+        << std::setprecision(3) << std::setw(6) << fracseconds << "Z</time></trkpt>\n";
+    }
+    out << "\t\t</trkseg>\n\t</trk>\n</gpx>\n";
+    out.close();
 }
 
 std::vector<std::shared_ptr<GPMF::klv>> GPMF::GPMF::getKlvs(std::string findKey, klv *parent)
