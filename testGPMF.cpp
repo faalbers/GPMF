@@ -51,9 +51,6 @@ int main(int argc, char* argv[])
         out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         out << "<gpx>\n\t<trk>\n\t\t<trkseg>\n";
         auto sampels = gpmf.getGPS();
-        std::cout << sampels.size() << std::endl;
-        std::cout.precision(5);
-        std::cout << std::fixed;
         int fixedWith = 10;
         float fracseconds;
         int seconds, minutes, hours;
