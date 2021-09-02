@@ -170,6 +170,8 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
         if ( stream == nullptr ) continue;
         SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
         UNIT *unit = getTypeKlvs<UNIT>(stream)[0];
+        GPSF *lock = getTypeKlvs<GPSF>(stream)[0];
+        if ( lock->gpsFix == 0 ) continue;
         float sampleDeltaTimeF = (float) currentPayload->duration/gps5c->samples.size();
         float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
         float sampleTimeF = (float) currentPayload->currentTime;

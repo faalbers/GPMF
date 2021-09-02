@@ -74,12 +74,6 @@ int main(int argc, char* argv[])
             << std::setw(2) << hours << ":"
             << std::setw(2) << minutes << ":" 
             << std::setprecision(3) << std::setw(6) << fracseconds << "Z</time></trkpt>\n";
-            /*
-            out << "\"><time>2007-01-01T" << std::setfill('0')
-            << std::setw(2) << hours << ":"
-            << std::setw(2) << minutes << ":" 
-            << std::fixed << std::setprecision(3) << seconds << "Z</time></trkpt>\n";
-            */
         }
         out << "\t\t</trkseg>\n\t</trk>\n</gpx>\n";
         out.close();

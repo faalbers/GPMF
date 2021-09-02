@@ -21,5 +21,6 @@
         #include "klvs/ACCL.hpp"
         #include "klvs/GYRO.hpp"
         #include "klvs/GPS5.hpp"
+        #include "klvs/GPSF.hpp"
 
 #endif
