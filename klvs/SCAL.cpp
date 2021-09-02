@@ -25,7 +25,7 @@ GPMF::SCAL::SCAL(std::string filePath, uint64_t filePos, std::string pathParent)
         int32_t denominator;
         for ( int index = 0 ; index < dataRepeat; index++ ) {
             fileStream.read((char *) &denominator, sizeof(denominator));
-            denominator = _byteswap_ushort(denominator);
+            denominator = _byteswap_ulong(denominator);
             denominators.push_back((int32_t) denominator);
         }
     }

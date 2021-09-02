@@ -19,7 +19,7 @@ public:
     void printHierarchyData(bool fullLists = false);
 
     static std::string                  key;
-    std::vector<std::vector<int32_t>>   gps;
+    std::vector<std::vector<int32_t>>   samples;
 };
 
 }

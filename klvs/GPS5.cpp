@@ -29,7 +29,7 @@ GPMF::GPS5::GPS5(std::string filePath, uint64_t filePos, std::string pathParent)
         gpsEntry.push_back(_byteswap_ulong(val));
         fileStream.read((char *) &val, sizeof(val));
         gpsEntry.push_back(_byteswap_ulong(val));
-        gps.push_back(gpsEntry);
+        samples.push_back(gpsEntry);
     }
 
     fileStream.close();
@@ -42,8 +42,8 @@ void GPMF::GPS5::printData(bool fullLists)
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : GPS samples" << std::endl;
     int index = 1;
     std::cout << dataIndent << "[#] (Lat., Long., Alt., 2D speed, 3D speed)\n";
-    if ( fullLists || (!fullLists && gps.size() <= 6) ) {
-        for ( auto gpsEntry : gps ) {
+    if ( fullLists || (!fullLists && samples.size() <= 6) ) {
+        for ( auto gpsEntry : samples ) {
             std::cout << dataIndent << "[" << index << "] ( "
                 << gpsEntry[0]
                 << ", " << gpsEntry[1]
@@ -56,21 +56,21 @@ void GPMF::GPS5::printData(bool fullLists)
     } else {
         for ( index = 0 ; index < 3; index++ ) {
             std::cout << dataIndent << "[" << index+1 << "] ( "
-                << gps[index][0]
-                << ", " << gps[index][1]
-                << ", " << gps[index][2]
-                << ", " << gps[index][3]
-                << ", " << gps[index][4]
+                << samples[index][0]
+                << ", " << samples[index][1]
+                << ", " << samples[index][2]
+                << ", " << samples[index][3]
+                << ", " << samples[index][4]
                 << " )" << std::endl;
         }
         std::cout << dataIndent << "     ...\n";
-        for ( index = gps.size()-3 ; index < gps.size(); index++ ) {
+        for ( index = samples.size()-3 ; index < samples.size(); index++ ) {
             std::cout << dataIndent << "[" << index+1 << "] ( "
-                << gps[index][0]
-                << ", " << gps[index][1]
-                << ", " << gps[index][2]
-                << ", " << gps[index][3]
-                << ", " << gps[index][4]
+                << samples[index][0]
+                << ", " << samples[index][1]
+                << ", " << samples[index][2]
+                << ", " << samples[index][3]
+                << ", " << samples[index][4]
                 << " )" << std::endl;
         }
     }
