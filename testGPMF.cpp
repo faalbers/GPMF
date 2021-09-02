@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     
     //gpmf.printHierarchyData();
 
-    if (false) {
+    if (true) {
         //auto sampels = gpmf.getAcceleration();
         //auto sampels = gpmf.getGyroscope();
         auto sampels = gpmf.getGPS();
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    gpmf.exportGPStoGPX("Blah");
+    //gpmf.exportGPStoGPX("Blah");
 
     std::cout << "\n**** END ****\n\n";
 
