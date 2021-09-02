@@ -43,25 +43,29 @@ GPMF::GPMF::GPMF(std::string fileName)
 
 std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
 {
-    int index = 1;
     DEVC *currentPayload = nullptr;
     sampleEntryType sampleEntry;
     std::vector<sampleType> accelerations;
     for ( auto payload : payloads_ ) {
         currentPayload = (DEVC *) payload.get();
-        STRM *stream;
-        ACCL *accel;
-        for ( auto strm : getTypeKlvs<STRM>(payload.get()) )
-            for ( auto accl : getTypeKlvs<ACCL>(strm) ) {
-                stream = strm;
-                accel = accl;
+        ACCL *acclFound = nullptr;
+        SCAL *scalFound = nullptr;
+        SIUN *siunFound = nullptr;
+        for ( auto strm : payload->getTypeKlvs<STRM>() ) {
+            for ( auto accl : strm->getTypeKlvs<ACCL>()) {
+                acclFound = accl;
+                for ( auto scal : strm->getTypeKlvs<SCAL>())
+                    scalFound = scal;
+                for ( auto siun : strm->getTypeKlvs<SIUN>())
+                    siunFound = siun;
             }
-        SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
-        SIUN *siun = getTypeKlvs<SIUN>(stream)[0];
-        float sampleDeltaTimeF = (float) currentPayload->duration/accel->samples.size();
+        }
+        if ( acclFound == nullptr || scalFound == nullptr || siunFound == nullptr )
+            continue;
+        float sampleDeltaTimeF = (float) currentPayload->duration/acclFound->samples.size();
         float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
         float sampleTimeF = (float) currentPayload->currentTime;
-        for ( auto sample : accel->samples ) {
+        for ( auto sample : acclFound->samples ) {
             sampleType acceleration;
 
             sampleEntry.value = sampleTimeF / currentPayload->timeScale;
@@ -74,18 +78,18 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
             sampleEntry.info = "duration";
             acceleration.duration = sampleEntry;
 
-            sampleEntry.value = (float) sample[0] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[0] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "up/down";
             acceleration.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[1] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[1] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "right/left";
             acceleration.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[2] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[2] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "forward/back";
             acceleration.entries.push_back(sampleEntry);
             
@@ -93,32 +97,35 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
 
             sampleTimeF += sampleDeltaTimeF;
         }
-        index++;
     }
     return accelerations;
 }
 
 std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
 {
-    int index = 1;
     DEVC *currentPayload = nullptr;
     sampleEntryType sampleEntry;
     std::vector<sampleType> gyroscopes;
     for ( auto payload : payloads_ ) {
         currentPayload = (DEVC *) payload.get();
-        STRM *stream;
-        GYRO *gyrosc;
-        for ( auto strm : getTypeKlvs<STRM>(payload.get()) )
-            for ( auto gyro : getTypeKlvs<GYRO>(strm) ) {
-                stream = strm;
-                gyrosc = gyro;
+        GYRO *gyroFound = nullptr;
+        SCAL *scalFound = nullptr;
+        SIUN *siunFound = nullptr;
+        for ( auto strm : payload->getTypeKlvs<STRM>() ) {
+            for ( auto gyro : strm->getTypeKlvs<GYRO>()) {
+                gyroFound = gyro;
+                for ( auto scal : strm->getTypeKlvs<SCAL>())
+                    scalFound = scal;
+                for ( auto siun : strm->getTypeKlvs<SIUN>())
+                    siunFound = siun;
             }
-        SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
-        SIUN *siun = getTypeKlvs<SIUN>(stream)[0];
-        float sampleDeltaTimeF = (float) currentPayload->duration/gyrosc->samples.size();
+        }
+        if ( gyroFound == nullptr || scalFound == nullptr || siunFound == nullptr )
+            continue;
+        float sampleDeltaTimeF = (float) currentPayload->duration/gyroFound->samples.size();
         float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
         float sampleTimeF = (float) currentPayload->currentTime;
-        for ( auto sample : gyrosc->samples ) {
+        for ( auto sample : gyroFound->samples ) {
             sampleType gyroscope;
 
             sampleEntry.value = sampleTimeF / currentPayload->timeScale;
@@ -131,18 +138,18 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
             sampleEntry.info = "duration";
             gyroscope.duration = sampleEntry;
 
-            sampleEntry.value = (float) sample[0] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[0] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "z rotation";
             gyroscope.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[1] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[1] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "x rotation";
             gyroscope.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[2] / scal->denominators[0];
-            sampleEntry.unit = siun->units[0];
+            sampleEntry.value = (float) sample[2] / scalFound->denominators[0];
+            sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "y rotation";
             gyroscope.entries.push_back(sampleEntry);
             
@@ -150,7 +157,6 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
 
             sampleTimeF += sampleDeltaTimeF;
         }
-        index++;
     }
     return gyroscopes;
 }
@@ -162,24 +168,30 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
     std::vector<sampleType> GPSs;
     for ( auto payload : payloads_ ) {
         currentPayload = (DEVC *) payload.get();
-        STRM *stream = nullptr;
-        GPS5 *gps5c = nullptr;
-        for ( auto strm : getTypeKlvs<STRM>(payload.get()) )
-            for ( auto gps5 : getTypeKlvs<GPS5>(strm) ) {
-                stream = strm;
-                gps5c = gps5;
+        GPS5 *gps5Found = nullptr;
+        SCAL *scalFound = nullptr;
+        UNIT *unitFound = nullptr;
+        GPSF *gpsfFound = nullptr;
+        for ( auto strm : payload->getTypeKlvs<STRM>() ) {
+            for ( auto gps5 : strm->getTypeKlvs<GPS5>()) {
+                gps5Found = gps5;
+                for ( auto scal : strm->getTypeKlvs<SCAL>())
+                    scalFound = scal;
+                for ( auto unit : strm->getTypeKlvs<UNIT>())
+                    unitFound = unit;
+                for ( auto gpsf : strm->getTypeKlvs<GPSF>())
+                    gpsfFound = gpsf;
             }
-        if ( stream == nullptr ) continue;
-        SCAL *scal = getTypeKlvs<SCAL>(stream)[0];
-        UNIT *unit = getTypeKlvs<UNIT>(stream)[0];
-        GPSF *lock = getTypeKlvs<GPSF>(stream)[0];
-        if ( lock->gpsFix == 0 ) continue;
-        float sampleDeltaTimeF = (float) currentPayload->duration/gps5c->samples.size();
+        }
+        if ( gps5Found == nullptr || scalFound == nullptr || unitFound == nullptr || gpsfFound == nullptr )
+            continue;
+        if ( gpsfFound->gpsFix == 0 ) continue;
+        float sampleDeltaTimeF = (float) currentPayload->duration/gps5Found->samples.size();
         float sampleDuration = sampleDeltaTimeF / currentPayload->timeScale;
         float sampleTimeF = (float) currentPayload->currentTime;
-        for ( auto sample : gps5c->samples ) {
+        for ( auto sample : gps5Found->samples ) {
             sampleType GPS;
-            
+
             sampleEntry.value = sampleTimeF / currentPayload->timeScale;
             sampleEntry.unit = "sec";
             sampleEntry.info = "current time";
@@ -190,31 +202,31 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
             sampleEntry.info = "duration";
             GPS.duration = sampleEntry;
 
-            sampleEntry.value = (float) sample[0] / scal->denominators[0];
-            sampleEntry.unit = unit->units[0];
+            sampleEntry.value = (float) sample[0] / scalFound->denominators[0];
+            sampleEntry.unit = unitFound->units[0];
             sampleEntry.info = "latitude";
             GPS.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[1] / scal->denominators[1];
-            sampleEntry.unit = unit->units[1];
+            sampleEntry.value = (float) sample[1] / scalFound->denominators[1];
+            sampleEntry.unit = unitFound->units[1];
             sampleEntry.info = "longitude";
             GPS.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[2] / scal->denominators[2];
-            sampleEntry.unit = unit->units[2];
+            sampleEntry.value = (float) sample[2] / scalFound->denominators[2];
+            sampleEntry.unit = unitFound->units[2];
             sampleEntry.info = "altitude";
             GPS.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[3] / scal->denominators[3];
-            sampleEntry.unit = unit->units[3];
+            sampleEntry.value = (float) sample[3] / scalFound->denominators[3];
+            sampleEntry.unit = unitFound->units[3];
             sampleEntry.info = "2D speed";
             GPS.entries.push_back(sampleEntry);
 
-            sampleEntry.value = (float) sample[4] / scal->denominators[4];
-            sampleEntry.unit = unit->units[4];
+            sampleEntry.value = (float) sample[4] / scalFound->denominators[4];
+            sampleEntry.unit = unitFound->units[4];
             sampleEntry.info = "3D speed";
             GPS.entries.push_back(sampleEntry);
-
+            
             GPSs.push_back(GPS);
 
             sampleTimeF += sampleDeltaTimeF;
@@ -252,17 +264,6 @@ void GPMF::GPMF::exportGPStoGPX(std::string fileName)
     }
     out << "\t\t</trkseg>\n\t</trk>\n</gpx>\n";
     out.close();
-}
-
-std::vector<std::shared_ptr<GPMF::klv>> GPMF::GPMF::getKlvs(std::string findKey, klv *parent)
-{
-    std::vector<std::shared_ptr<klv>> found;
-    if ( parent != nullptr ) parent->getKlvs_(findKey, found);
-    else for ( auto payload : payloads_ ) {
-        if ( payload->key == findKey ) found.push_back(payload);
-        payload->getKlvs_(findKey, found);
-    }
-    return found;
 }
 
 void GPMF::GPMF::printHierarchy()

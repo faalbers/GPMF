@@ -21,18 +21,9 @@ public:
     std::vector<sampleType> getGyroscope();
     std::vector<sampleType> getGPS();
     void                    exportGPStoGPX(std::string fileName);
-    
-    std::vector<std::shared_ptr<klv>>  getKlvs(std::string findKey, klv *parent = nullptr);
-    template<typename T>
-    std::vector<T *>     getTypeKlvs(klv *parent = nullptr)
-    {
-        std::vector<T *> foundTypeKlvs;
-        for( auto foundKlv : getKlvs(T::key, parent) ) foundTypeKlvs.push_back((T *) foundKlv.get());
-        return foundTypeKlvs;
-    }
 
 private:
-    int                                 nestLevel();
+    int     nestLevel();
 
 	std::shared_ptr<MP4::MP4> 		    mp4_;
     std::vector<std::shared_ptr<klv>>   payloads_;

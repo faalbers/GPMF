@@ -16,20 +16,16 @@ int main(int argc, char* argv[])
 
     auto testStart = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(testStart - createStart);
-    std::cout << "Create Time: " << ms_int.count() << "ms\n";
-    
-    std::cout << "\n**** TEST GPMF ****\n\n";
+    std::cout << "\nCreate Time: " << ms_int.count() << "ms\n";
+    std::cout << "**** TEST GPMF ****\n\n";
     
     //gpmf.printHierarchy();
     
     //gpmf.printHierarchyData();
 
-    auto sampels = gpmf.getAcceleration();
-    std::cout << sampels.size() << std::endl;
-    
     if (false) {
-        auto sampels = gpmf.getAcceleration();
-        //auto sampels = gpmf.getGyroscope();
+        //auto sampels = gpmf.getAcceleration();
+        auto sampels = gpmf.getGyroscope();
         //auto sampels = gpmf.getGPS();
         std::cout.precision(5);
         std::cout << std::fixed;
@@ -45,13 +41,14 @@ int main(int argc, char* argv[])
         }
     }
 
-    //gpmf.exportGPStoGPX("Blah");
+    gpmf.exportGPStoGPX("Blah");
 
     auto end = std::chrono::high_resolution_clock::now();
     ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - testStart);
-    std::cout << "Test Time: " << ms_int.count() << "ms\n";
-
-    std::cout << "\n**** END ****\n\n";
+    std::cout << "\nTest Time : " << ms_int.count() << "ms\n";
+    ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - createStart);
+    std::cout << "Total Time: " << ms_int.count() << "ms\n";
+    std::cout << "**** END ****\n\n";
 
     return 0;
 }

@@ -53,17 +53,6 @@ GPMF::klv::klv(std::string filePath, uint64_t filePos, std::string pathParent)
     } while ( childFilePos < fileNextPos_ );
 }
 
-std::vector<std::shared_ptr<GPMF::klv>> GPMF::klv::getKlvs(std::string findKey, klv *parent)
-{
-    std::vector<std::shared_ptr<klv>> found;
-    if ( parent != nullptr ) parent->getKlvs_(findKey, found);
-    else for ( auto child : children_ ) {
-        if ( child->key == findKey ) found.push_back(child);
-        child->getKlvs_(findKey, found);
-    }
-    return found;
-}
-
 void GPMF::klv::printHierarchy(int pathWith, int valLevel)
 {
     std::cout << std::setw(pathWith) << std::left << path_;

@@ -14,12 +14,13 @@ class klv
 public:
     klv(std::string filePath, uint64_t filePos, std::string pathParent = "/");
 
-    std::vector<std::shared_ptr<klv>>  getKlvs(std::string findKey, klv *parent = nullptr);
     template<typename T>
-    std::vector<T *>     getTypeKlvs(klv *parent = nullptr)
+    std::vector<T *>     getTypeKlvs()
     {
         std::vector<T *> foundTypeKlvs;
-        for( auto foundKlv : getKlvs(T::key, parent) ) foundTypeKlvs.push_back((T *) foundKlv.get());
+        std::vector<std::shared_ptr<klv>> foundKlvs;
+        getKlvs_(T::key, foundKlvs);
+        for( auto foundKlv : foundKlvs ) foundTypeKlvs.push_back((T *) foundKlv.get());
         return foundTypeKlvs;
     }
 
