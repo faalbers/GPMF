@@ -2,11 +2,18 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#ifdef GPMF_PARSE_TIME
+#include <chrono>
+#endif
 
 
 GPMF::GPMF::GPMF(std::string fileName)
     : mp4_(new MP4::MP4(fileName))
 {
+    #ifdef GPMF_PARSE_TIME
+    auto start = std::chrono::high_resolution_clock::now();
+    #endif
+    
     MP4::trak *GPMFtrack = nullptr;
     for ( auto track : mp4_->getTracks()) {
         for ( auto sampleD : track->getSampleDescriptions()) {
@@ -39,6 +46,12 @@ GPMF::GPMF::GPMF(std::string fileName)
         }
         payloads_.push_back( payload );
     }
+
+    #ifdef GPMF_PARSE_TIME
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "\nGPMF Time : " << ms_int.count() << "ms\n";
+    #endif
 }
 
 std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
