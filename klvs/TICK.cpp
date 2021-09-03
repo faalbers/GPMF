@@ -24,7 +24,7 @@ GPMF::TICK::TICK(std::string filePath, uint64_t filePos, std::string pathParent)
 
 void GPMF::TICK::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : in time timing" << std::endl;
     std::cout << dataIndent << inTime << std::endl;

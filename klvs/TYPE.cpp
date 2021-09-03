@@ -12,7 +12,7 @@ GPMF::TYPE::TYPE(std::string filePath, uint64_t filePos, std::string pathParent)
 
     std::ifstream fileStream(filePath, std::ios::binary);
     if ( fileStream.fail() ) throw std::runtime_error("TYPE klv can not parse file: "+filePath);
-    char dataBlock[dataSize_];
+    char dataBlock[200];
     fileStream.seekg(fileDataPos_, fileStream.beg);
     fileStream.read((char *) dataBlock, sizeof(dataBlock));
     type = std::string(dataBlock).substr(0, sampleSize * dataRepeat);
@@ -21,7 +21,7 @@ GPMF::TYPE::TYPE(std::string filePath, uint64_t filePos, std::string pathParent)
 
 void GPMF::TYPE::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : stream type" << std::endl;
     std::cout << dataIndent << type << std::endl;

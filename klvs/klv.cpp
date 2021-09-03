@@ -67,7 +67,7 @@ void GPMF::klv::printHierarchy(int pathWith, int valLevel)
 
 void GPMF::klv::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : klv not defined yet" << std::endl;
 }

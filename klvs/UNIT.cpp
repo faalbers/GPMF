@@ -14,7 +14,7 @@ GPMF::UNIT::UNIT(std::string filePath, uint64_t filePos, std::string pathParent)
     if ( fileStream.fail() ) throw std::runtime_error("UNIT klv can not parse file: "+filePath);
     fileStream.seekg(fileDataPos_, fileStream.beg);
     
-    char dataBlock[sampleSize];
+    char dataBlock[200];
     for ( int index = 0 ; index < dataRepeat; index++ ) {
         fileStream.read((char *) dataBlock, sizeof(dataBlock));
         units.push_back(std::string(dataBlock).substr(0, sampleSize));
@@ -25,7 +25,7 @@ GPMF::UNIT::UNIT(std::string filePath, uint64_t filePos, std::string pathParent)
 
 void GPMF::UNIT::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : display units" << std::endl;
     int index = 1;

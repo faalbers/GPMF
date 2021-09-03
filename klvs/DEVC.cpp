@@ -13,7 +13,7 @@ std::vector<GPMF::STRM *> GPMF::DEVC::getStreams()
 
 void GPMF::DEVC::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::cout << path_ << " (<datatype> <datasize> <repeat>) : main container" << std::endl;
 }
 

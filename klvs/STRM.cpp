@@ -9,7 +9,7 @@ GPMF::STRM::STRM(std::string filePath, uint64_t filePos, std::string pathParent)
 
 void GPMF::STRM::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::cout << path_ << " (<datatype> <datasize> <repeat>) : stream container" << std::endl;
 }
 

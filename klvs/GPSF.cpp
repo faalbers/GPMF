@@ -24,7 +24,7 @@ GPMF::GPSF::GPSF(std::string filePath, uint64_t filePos, std::string pathParent)
 
 void GPMF::GPSF::printData(bool fullLists)
 {
-    int levelCount = std::count(path_.begin(), path_.end(), '/');
+    auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : total sample count" << std::endl;
     std::cout << dataIndent << gpsFix << std::endl;
