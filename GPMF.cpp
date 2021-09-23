@@ -18,10 +18,8 @@ GPMF::GPMF::GPMF(std::string fileName)
     for ( auto track : mp4_->getTracks()) {
         for ( auto sampleD : track->getSampleDescriptions()) {
             if ( sampleD.dataFormat == "gpmd") {
-                for ( auto dataReference : track->getDataReferences()) {
-                    if ( dataReference.ID == sampleD.dataReferenceIndex )
-                        if ( dataReference.reference == "" )
-                            GPMFtrack = track;
+                if ( track->isDataInSameFile() ) {
+                    GPMFtrack = track;
                 }
             }
         }
@@ -29,7 +27,7 @@ GPMF::GPMF::GPMF(std::string fileName)
     if ( GPMFtrack == nullptr )
         throw std::runtime_error("GPMF: Can't find GPMF track in file !");
     
-    auto samples = GPMFtrack->getSamples();
+    auto trackSamples = GPMFtrack->getSamples();
     DEVC *currentPayload = nullptr;
     for ( auto chunk : GPMFtrack->getChunks() ) {
         #ifdef GPMF_PARSE_PATH
@@ -37,10 +35,10 @@ GPMF::GPMF::GPMF(std::string fileName)
         #endif
         auto payload = klv::makeKlv_(mp4_->filePath, chunk.dataOffset);
         currentPayload = (DEVC *) payload.get();
-        for ( auto sample : samples ) {
+        for ( auto sample : trackSamples.samples ) {
             if ( sample.ID == chunk.currentSampleID ) {
                 currentPayload->timeScale = GPMFtrack->getMediaTimeScale();
-                currentPayload->currentTime = sample.currentTime;
+                currentPayload->currentTime = sample.time;
                 currentPayload->duration = sample.duration;
             }
         }

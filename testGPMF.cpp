@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     std::cout << "\nCreate Time: " << ms_int.count() << "ms\n";
     std::cout << "**** TEST GPMF ****\n\n";
     
-    //gpmf.printHierarchy();
+    gpmf.printHierarchy();
     
     //gpmf.printHierarchyData();
 
