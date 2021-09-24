@@ -24,6 +24,7 @@ typedef struct sampleType
     std::vector<sampleEntryType>    entries;
     sampleEntryType                 time;
     sampleEntryType                 duration;
+    uint64_t                        timeStamp;
 } sampleType;
 
 namespace datablock

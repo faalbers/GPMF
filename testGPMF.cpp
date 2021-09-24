@@ -19,29 +19,38 @@ int main(int argc, char* argv[])
     std::cout << "\nCreate Time: " << ms_int.count() << "ms\n";
     std::cout << "**** TEST GPMF ****\n\n";
     
-    gpmf.printHierarchy();
+    //gpmf.printHierarchy();
     
-    //gpmf.printHierarchyData();
+    gpmf.printHierarchyData();
 
     if (false) {
-        //auto sampels = gpmf.getAcceleration();
-        auto sampels = gpmf.getGyroscope();
-        //auto sampels = gpmf.getGPS();
+        auto samples = gpmf.getGyroscope();
+        std::cout.precision(5);
+        std::cout << std::fixed;
+        for ( auto sample : samples ) {
+            std::cout <<  sample.time.value << " " << ((double)sample.timeStamp/1000)/1000 << std::endl;
+        }
+    }
+
+    if (false) {
+        //auto samples = gpmf.getAcceleration();
+        auto samples = gpmf.getGyroscope();
+        //auto samples = gpmf.getGPS();
         std::cout.precision(5);
         std::cout << std::fixed;
         int fixedWith = 10;
         int index = 1;
-        for ( auto sampel : sampels ) {
+        for ( auto sample : samples ) {
             std::cout << "Sample: " << index << std::endl;
-            std::cout << "  " << sampel.time.info << ": " << sampel.time.value << " " << sampel.time.unit << std::endl;
-            std::cout << "  " << sampel.duration.info << ": " << sampel.duration.value << " " << sampel.duration.unit << std::endl;
-            for ( auto entry : sampel.entries )
+            std::cout << "  " << sample.time.info << ": " << sample.time.value << " " << sample.time.unit << std::endl;
+            std::cout << "  " << sample.duration.info << ": " << sample.duration.value << " " << sample.duration.unit << std::endl;
+            for ( auto entry : sample.entries )
                 std::cout << "    " << entry.info << ": " << entry.value << " " << entry.unit << std::endl;
             index++;
         }
     }
 
-    gpmf.exportGPStoGPX("Blah");
+    //gpmf.exportGPStoGPX("Blah");
 
     auto end = std::chrono::high_resolution_clock::now();
     ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - testStart);

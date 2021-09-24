@@ -20,6 +20,7 @@ public:
     std::vector<sampleType> getAcceleration();
     std::vector<sampleType> getGyroscope();
     std::vector<sampleType> getGPS();
+    //std::vector<sampleType> getShutter();
     void                    exportGPStoGPX(std::string fileName);
 
 private:

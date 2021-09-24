@@ -16,8 +16,10 @@ GPMF::TMPC::TMPC(std::string filePath, uint64_t filePos, std::string pathParent)
     if ( fileStream.fail() ) throw std::runtime_error("TMPC klv can not parse file: "+filePath);
     fileStream.seekg(fileDataPos_, fileStream.beg);
     
-    fileStream.read((char *) &temperature, sizeof(temperature));
-    temperature = _byteswap_ulong(temperature);
+    uint32_t temperatureInt;
+    fileStream.read((char *) &temperatureInt, sizeof(temperatureInt));
+    temperatureInt = _byteswap_ulong(temperatureInt);
+    temperature = *((float *)&temperatureInt);
     
     fileStream.close();
 }

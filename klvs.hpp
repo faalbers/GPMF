@@ -11,7 +11,11 @@
 */
     #include "klvs/DVNM.hpp"
     #include "klvs/STRM.hpp"
+        #include "klvs/STMP.hpp"
         #include "klvs/TSMP.hpp"
+        #include "klvs/ORIN.hpp"
+        #include "klvs/ORIO.hpp"
+        #include "klvs/MTRX.hpp"
         #include "klvs/STNM.hpp"
         #include "klvs/TYPE.hpp"
         #include "klvs/TMPC.hpp"
@@ -22,5 +26,6 @@
         #include "klvs/GYRO.hpp"
         #include "klvs/GPS5.hpp"
         #include "klvs/GPSF.hpp"
+        #include "klvs/SHUT.hpp"
 
 #endif

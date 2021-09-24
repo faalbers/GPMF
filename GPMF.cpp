@@ -62,6 +62,7 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
         ACCL *acclFound = nullptr;
         SCAL *scalFound = nullptr;
         SIUN *siunFound = nullptr;
+        STMP *stmpFound = nullptr;
         for ( auto strm : payload->getTypeKlvs<STRM>() ) {
             for ( auto accl : strm->getTypeKlvs<ACCL>()) {
                 acclFound = accl;
@@ -69,6 +70,8 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
                     scalFound = scal;
                 for ( auto siun : strm->getTypeKlvs<SIUN>())
                     siunFound = siun;
+                for ( auto stmp : strm->getTypeKlvs<STMP>())
+                    stmpFound = stmp;
             }
         }
         if ( acclFound == nullptr || scalFound == nullptr || siunFound == nullptr )
@@ -103,7 +106,10 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getAcceleration()
             sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "forward/back";
             acceleration.entries.push_back(sampleEntry);
-            
+
+            acceleration.timeStamp = 0;
+            if ( stmpFound != nullptr ) acceleration.timeStamp = stmpFound->timeStamp;
+
             accelerations.push_back(acceleration);
 
             sampleTimeF += sampleDeltaTimeF;
@@ -122,6 +128,7 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
         GYRO *gyroFound = nullptr;
         SCAL *scalFound = nullptr;
         SIUN *siunFound = nullptr;
+        STMP *stmpFound = nullptr;
         for ( auto strm : payload->getTypeKlvs<STRM>() ) {
             for ( auto gyro : strm->getTypeKlvs<GYRO>()) {
                 gyroFound = gyro;
@@ -129,6 +136,8 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
                     scalFound = scal;
                 for ( auto siun : strm->getTypeKlvs<SIUN>())
                     siunFound = siun;
+                for ( auto stmp : strm->getTypeKlvs<STMP>())
+                    stmpFound = stmp;
             }
         }
         if ( gyroFound == nullptr || scalFound == nullptr || siunFound == nullptr )
@@ -163,6 +172,9 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGyroscope()
             sampleEntry.unit = siunFound->units[0];
             sampleEntry.info = "y rotation";
             gyroscope.entries.push_back(sampleEntry);
+
+            gyroscope.timeStamp = 0;
+            if ( stmpFound != nullptr ) gyroscope.timeStamp = stmpFound->timeStamp;
             
             gyroscopes.push_back(gyroscope);
 
@@ -194,7 +206,7 @@ std::vector<GPMF::sampleType> GPMF::GPMF::getGPS()
                     gpsfFound = gpsf;
             }
         }
-        if ( gps5Found == nullptr || scalFound == nullptr || unitFound == nullptr || gpsfFound == nullptr )
+        if ( gps5Found == nullptr || scalFound == nullptr || unitFound == nullptr )
             continue;
         if ( gpsfFound->gpsFix == 0 ) continue;
         float sampleDeltaTimeF = (float) currentPayload->duration/gps5Found->samples.size();

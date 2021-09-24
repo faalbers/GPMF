@@ -96,7 +96,11 @@ std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t 
     else if ( key == "DVNM" ) newAtom = std::make_shared<DVNM>(filePath_, nextFilePos, pathParent);
     else if ( key == "TICK" ) newAtom = std::make_shared<TICK>(filePath_, nextFilePos, pathParent);
     else if ( key == "STRM" ) newAtom = std::make_shared<STRM>(filePath_, nextFilePos, pathParent);
+    else if ( key == "STMP" ) newAtom = std::make_shared<STMP>(filePath_, nextFilePos, pathParent);
     else if ( key == "TSMP" ) newAtom = std::make_shared<TSMP>(filePath_, nextFilePos, pathParent);
+    else if ( key == "ORIN" ) newAtom = std::make_shared<ORIN>(filePath_, nextFilePos, pathParent);
+    else if ( key == "ORIO" ) newAtom = std::make_shared<ORIO>(filePath_, nextFilePos, pathParent);
+    else if ( key == "MTRX" ) newAtom = std::make_shared<MTRX>(filePath_, nextFilePos, pathParent);
     else if ( key == "STNM" ) newAtom = std::make_shared<STNM>(filePath_, nextFilePos, pathParent);
     else if ( key == "TYPE" ) newAtom = std::make_shared<TYPE>(filePath_, nextFilePos, pathParent);
     else if ( key == "TMPC" ) newAtom = std::make_shared<TMPC>(filePath_, nextFilePos, pathParent);
@@ -107,6 +111,7 @@ std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t 
     else if ( key == "GYRO" ) newAtom = std::make_shared<GYRO>(filePath_, nextFilePos, pathParent);
     else if ( key == "GPS5" ) newAtom = std::make_shared<GPS5>(filePath_, nextFilePos, pathParent);
     else if ( key == "GPSF" ) newAtom = std::make_shared<GPSF>(filePath_, nextFilePos, pathParent);
+    else if ( key == "SHUT" ) newAtom = std::make_shared<SHUT>(filePath_, nextFilePos, pathParent);
     else newAtom = std::make_shared<klv>(filePath_, nextFilePos, pathParent);
 
     return newAtom;
