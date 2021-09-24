@@ -267,8 +267,9 @@ void GPMF::GPMF::exportGPStoGPX(std::string fileName)
         //out << std::setprecision(9);
         out << std::fixed << std::setprecision(7);
         out << "\t\t\t<trkpt lat=\"" << sampel.entries[0].value;
-        out << "\" lon=\"" << sampel.entries[1].value;
-        out << "\"><time>2007-01-01T" << std::setfill('0')
+        out << "\" lon=\"" << sampel.entries[1].value << "\">";
+        out << "<ele>" << sampel.entries[2].value << "</ele>";
+        out << "<time>2007-01-01T" << std::setfill('0')
         << std::setw(2) << hours << ":"
         << std::setw(2) << minutes << ":" 
         << std::setprecision(3) << std::setw(6) << fracseconds << "Z</time></trkpt>\n";
