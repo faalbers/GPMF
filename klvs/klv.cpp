@@ -9,7 +9,7 @@ GPMF::klv::klv(std::string filePath, uint64_t filePos, std::string pathParent)
     , filePos_(filePos)
     , parentPath_(pathParent)
 {
-    uint64_t childFilePos;
+    int64_t childFilePos;
 
     std::ifstream fileStream(filePath, std::ios::binary);
     if ( fileStream.fail() ) throw std::runtime_error("Atom can not parse file: "+filePath);
