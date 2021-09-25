@@ -16,7 +16,7 @@ GPMF::UNIT::UNIT(std::string filePath, uint64_t filePos, std::string pathParent)
     
     char dataBlock[200];
     for ( int index = 0 ; index < dataRepeat; index++ ) {
-        fileStream.read((char *) dataBlock, sizeof(dataBlock));
+        fileStream.read((char *) dataBlock, sampleSize);
         units.push_back(std::string(dataBlock).substr(0, sampleSize));
     }
 

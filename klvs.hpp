@@ -27,5 +27,6 @@
         #include "klvs/GPS5.hpp"
         #include "klvs/GPSF.hpp"
         #include "klvs/SHUT.hpp"
+        #include "klvs/WBAL.hpp"
 
 #endif
