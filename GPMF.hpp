@@ -26,7 +26,7 @@ public:
 private:
     int     nestLevel();
 
-	std::shared_ptr<MP4::MP4> 		    mp4_;
+    std::shared_ptr<MP4::Parser> 	    mp4parser_;
     std::vector<std::shared_ptr<klv>>   payloads_;
 };
 

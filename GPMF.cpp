@@ -8,40 +8,24 @@
 
 
 GPMF::GPMF::GPMF(std::string fileName)
-    : mp4_(new MP4::MP4(fileName))
+    : mp4parser_(std::make_shared<MP4::Parser>(fileName))
 {
     #ifdef GPMF_PARSE_TIME
     auto start = std::chrono::high_resolution_clock::now();
     #endif
     
-    MP4::trak *GPMFtrack = nullptr;
-    for ( auto track : mp4_->getTracks()) {
-        for ( auto sampleD : track->getSampleDescriptions()) {
-            if ( sampleD.dataFormat == "gpmd") {
-                if ( track->isDataInSameFile() ) {
-                    GPMFtrack = track;
-                }
-            }
-        }
-    }
+    auto GPMFtrack = mp4parser_->getTrack("gpmd");
+
     if ( GPMFtrack == nullptr )
         throw std::runtime_error("GPMF: Can't find GPMF track in file !");
     
-    auto trackSamples = GPMFtrack->getSamples();
     DEVC *currentPayload = nullptr;
-    for ( auto chunk : GPMFtrack->getChunks() ) {
-        #ifdef GPMF_PARSE_PATH
-        std::cout << "PAYLOAD: " << chunk.ID << std::endl;
-        #endif
-        auto payload = klv::makeKlv_(mp4_->filePath, chunk.dataOffset);
+    for ( auto sample : GPMFtrack->samples ) {
+        auto payload = klv::makeKlv_(sample.second.filePath, sample.second.filePos);
         currentPayload = (DEVC *) payload.get();
-        for ( auto sample : trackSamples.samples ) {
-            if ( sample.ID == chunk.currentSampleID ) {
-                currentPayload->timeScale = GPMFtrack->getMediaTimeScale();
-                currentPayload->currentTime = sample.time;
-                currentPayload->duration = sample.duration;
-            }
-        }
+        currentPayload->timeScale = GPMFtrack->mediaTimeScale;
+        currentPayload->currentTime = sample.second.time;
+        currentPayload->duration = sample.second.duration;
         payloads_.push_back( payload );
     }
 
