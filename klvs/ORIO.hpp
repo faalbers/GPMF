@@ -28,6 +28,7 @@ class ORIO : public klv
 {
 public:
     ORIO(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    ORIO(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

@@ -11,6 +11,7 @@ class TMPC : public klv
 {
 public:
     TMPC(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    TMPC(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

@@ -22,6 +22,11 @@ GPMF::TICK::TICK(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::TICK::TICK(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+}
+
 void GPMF::TICK::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');

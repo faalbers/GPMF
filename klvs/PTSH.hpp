@@ -1,5 +1,5 @@
-#ifndef GPMF_STNM_H
-#define GPMF_STNM_H
+#ifndef GPMF_PTSH_H
+#define GPMF_PTSH_H
 #include <string>
 #include <memory>
 #include "klv.hpp"
@@ -7,11 +7,11 @@
 namespace GPMF
 {
 
-class STNM : public klv
+class PTSH : public klv
 {
 public:
-    STNM(std::string filePath, uint64_t filePos, std::string pathParent = "/");
-    STNM(std::string &dataString, std::string pathParent = "/");
+    PTSH(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    PTSH(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

@@ -24,10 +24,12 @@ public:
     void                    exportGPStoGPX(std::string fileName);
 
 private:
+    void    error_(std::string message);
     int     nestLevel();
 
     std::shared_ptr<MP4::Parser> 	    mp4parser_;
     std::vector<std::shared_ptr<klv>>   payloads_;
+    std::shared_ptr<klv>                udtaPayload_;
 };
 
 }

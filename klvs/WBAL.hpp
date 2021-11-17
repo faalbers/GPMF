@@ -12,6 +12,7 @@ class WBAL : public klv
 {
 public:
     WBAL(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    WBAL(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

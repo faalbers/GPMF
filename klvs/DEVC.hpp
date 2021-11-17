@@ -12,6 +12,7 @@ class DEVC : public klv
 {
 public:
     DEVC(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    DEVC(std::string &dataString, std::string pathParent = "/");
 
     std::vector<STRM *>  getStreams();
 

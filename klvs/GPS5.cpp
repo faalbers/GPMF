@@ -35,6 +35,11 @@ GPMF::GPS5::GPS5(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::GPS5::GPS5(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+}
+
 void GPMF::GPS5::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');

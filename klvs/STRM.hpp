@@ -11,6 +11,7 @@ class STRM : public klv
 {
 public:
     STRM(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    STRM(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

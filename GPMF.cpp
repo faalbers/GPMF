@@ -14,6 +14,14 @@ GPMF::GPMF::GPMF(std::string fileName)
     auto start = std::chrono::high_resolution_clock::now();
     #endif
     
+    // get udta GPMF payload
+    auto GPMFdata = mp4parser_->getUserData("GPMF");
+    if ( GPMFdata == "" )
+        error_("constructor can not find GPMF user data");
+    auto udtaPayload_ = klv::makeKlv_(GPMFdata);
+    udtaPayload_->printHierarchyData();
+
+    // get GPMF sample payloads
     auto GPMFtrack = mp4parser_->getTrack("gpmd");
 
     if ( GPMFtrack == nullptr )
@@ -316,4 +324,12 @@ int GPMF::GPMF::nestLevel()
         if ( level > maxLevel ) maxLevel = level;
     }
     return maxLevel;
+}
+
+void GPMF::GPMF::error_(std::string message)
+{
+    std::cout << "GPMF::GPMF:\n";
+    std::cout << "-> " << message << std::endl;
+    std::cout << "exit application ..." << std::endl;
+    exit(1);
 }

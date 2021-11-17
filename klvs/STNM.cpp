@@ -19,6 +19,11 @@ GPMF::STNM::STNM(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::STNM::STNM(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+}
+
 void GPMF::STNM::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');

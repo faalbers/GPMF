@@ -11,6 +11,7 @@ class MTRX : public klv
 {
 public:
     MTRX(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    MTRX(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

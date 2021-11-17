@@ -24,6 +24,11 @@ GPMF::WBAL::WBAL(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::WBAL::WBAL(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+}
+
 void GPMF::WBAL::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');

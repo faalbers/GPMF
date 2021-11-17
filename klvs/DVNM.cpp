@@ -19,12 +19,18 @@ GPMF::DVNM::DVNM(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::DVNM::DVNM(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+    name = dataString.substr(0, sampleSize * dataRepeat);
+}
+
 void GPMF::DVNM::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : device name" << std::endl;
-    std::cout << dataIndent << name << std::endl;
+    std::cout << dataIndent << getZeroTerminatedString(name) << std::endl;
 }
 
 void GPMF::DVNM::printHierarchyData(bool fullLists)

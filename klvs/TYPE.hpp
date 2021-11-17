@@ -11,6 +11,7 @@ class TYPE : public klv
 {
 public:
     TYPE(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    TYPE(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

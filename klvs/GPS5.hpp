@@ -14,6 +14,7 @@ class GPS5 : public klv
 {
 public:
     GPS5(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    GPS5(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

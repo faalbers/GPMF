@@ -53,6 +53,63 @@ GPMF::klv::klv(std::string filePath, uint64_t filePos, std::string pathParent)
     } while ( childFilePos < fileNextPos_ );
 }
 
+GPMF::klv::klv(std::string &dataString, std::string pathParent)
+    : filePath_("")
+    , filePos_(0)
+    , parentPath_(pathParent)
+{
+    datablock::klvHeaderBlock headerBlock;
+    std::string headerBlockString;
+
+    // get klv header
+    const char *copyData;
+    if ( sizeof(headerBlock) > dataString.size())
+        error_("constructor data read too large");
+    headerBlockString = dataString.substr(0,sizeof(headerBlock));
+    copyData = headerBlockString.c_str();
+    memcpy(&headerBlock, copyData, sizeof(headerBlock));
+    dataString = dataString.substr(sizeof(headerBlock));
+
+    key = std::string(headerBlock.key).substr(0,4);
+    path_ = parentPath_ + key;
+
+    // get data block size
+    headerBlock.repeat = _byteswap_ushort(headerBlock.repeat);
+
+    sDataSize_ = (size_t) headerBlock.repeat * (size_t) headerBlock.sampleSize;
+    sDataSize_ += (4 - (sDataSize_ % 4)) * std::min(sDataSize_ % 4, (size_t) 1); // uint32_t padding
+
+    dataSize_ = (int64_t) headerBlock.repeat * (int64_t) headerBlock.sampleSize;
+    dataSize_ += (4 - (dataSize_ % 4)) * std::min(dataSize_ % 4, (int64_t) 1); // uint32_t padding
+    
+    //auto nextDataStringSize = dataString.size() - (size_t) dataSize_;
+    auto nextDataStringSize = dataString.size() - sDataSize_;
+    
+    // get data type
+    dataType = headerBlock.type;
+    sampleSize = (int64_t) headerBlock.sampleSize;
+    dataRepeat = (int64_t) headerBlock.repeat;
+   
+    // nesting
+    if (  dataType != 0 ) return;
+    do {
+        auto child = makeKlv_(dataString, path_+"/");
+        dataString = dataString.substr(child->sDataSize_);
+        if ( child != nullptr ) children_.push_back(child);
+    } while ( dataString.size() > nextDataStringSize );
+
+}
+
+std::string GPMF::klv::getZeroTerminatedString(std::string &dataString)
+{
+    std::stringstream charss;
+    for ( auto charByte : dataString ) {
+        if ( charByte == 0 ) break;
+        charss << charByte;
+    }
+    return charss.str();
+}
+
 void GPMF::klv::printHierarchy(int pathWith, int valLevel)
 {
     std::cout << std::setw(pathWith) << std::left << path_;
@@ -78,7 +135,7 @@ void GPMF::klv::printHierarchyData(bool fullLists)
     for ( auto child : children_ ) child->printHierarchyData(fullLists);
 }
 
-std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t nextFilePos, std::string pathParent)
+std::shared_ptr<GPMF::klv> GPMF::klv::makeKlv_(std::string filePath_, int64_t nextFilePos, std::string pathParent)
 {
     std::shared_ptr<klv> newAtom;
 
@@ -118,6 +175,37 @@ std::shared_ptr<GPMF::klv>   GPMF::klv::makeKlv_(std::string filePath_, int64_t 
     return newAtom;
 }
 
+std::shared_ptr<GPMF::klv> GPMF::klv::makeKlv_(std::string &dataString, std::string pathParent)
+{
+    std::shared_ptr<klv> newKlv;
+
+    // get klv header
+    datablock::klvHeaderBlock headerBlock;
+    if ( sizeof(headerBlock) > dataString.size())
+        error_("constructor data read too large");
+    std::string headerBlockString = dataString.substr(0,sizeof(headerBlock));
+    const char *copyData = headerBlockString.c_str();
+    memcpy(&headerBlock, copyData, sizeof(headerBlock));
+
+    std::string foundKey = std::string(headerBlock.key).substr(0,4);
+
+    if ( foundKey == "DEVC" ) newKlv = std::make_shared<DEVC>(dataString, pathParent);
+    else if ( foundKey == "DVNM" ) newKlv = std::make_shared<DVNM>(dataString, pathParent);
+    else if ( foundKey == "STRM" ) newKlv = std::make_shared<STRM>(dataString, pathParent);
+    else if ( foundKey == "LINF" ) newKlv = std::make_shared<LINF>(dataString, pathParent);
+    else if ( foundKey == "CASN" ) newKlv = std::make_shared<CASN>(dataString, pathParent);
+    else if ( foundKey == "MINF" ) newKlv = std::make_shared<MINF>(dataString, pathParent);
+    else if ( foundKey == "FMWR" ) newKlv = std::make_shared<FMWR>(dataString, pathParent);
+    else if ( foundKey == "OREN" ) newKlv = std::make_shared<OREN>(dataString, pathParent);
+    else if ( foundKey == "DZOM" ) newKlv = std::make_shared<DZOM>(dataString, pathParent);
+    else if ( foundKey == "SMTR" ) newKlv = std::make_shared<SMTR>(dataString, pathParent);
+    else if ( foundKey == "PTWB" ) newKlv = std::make_shared<PTWB>(dataString, pathParent);
+    else if ( foundKey == "PTSH" ) newKlv = std::make_shared<PTSH>(dataString, pathParent);
+    else newKlv = std::make_shared<klv>(dataString, pathParent);
+
+    return newKlv;
+}
+
 int GPMF::klv::nestLevel_(int level)
 {
     level++;
@@ -135,4 +223,12 @@ void GPMF::klv::getKlvs_(std::string findKey, std::vector<std::shared_ptr<klv>> 
         if ( child->key == findKey ) found.push_back(child);
         child->getKlvs_(findKey, found);
     }
+}
+
+void GPMF::klv::error_(std::string message)
+{
+    std::cout << "GPMF::klv:\n";
+    std::cout << "-> " << message << std::endl;
+    std::cout << "exit application ..." << std::endl;
+    exit(1);
 }

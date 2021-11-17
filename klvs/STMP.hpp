@@ -11,6 +11,7 @@ class STMP : public klv
 {
 public:
     STMP(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    STMP(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

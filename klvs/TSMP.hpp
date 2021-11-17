@@ -11,6 +11,7 @@ class TSMP : public klv
 {
 public:
     TSMP(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    TSMP(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

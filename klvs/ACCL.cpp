@@ -34,6 +34,11 @@ GPMF::ACCL::ACCL(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.close();
 }
 
+GPMF::ACCL::ACCL(std::string &dataString, std::string pathParent)
+    : klv(dataString, pathParent)
+{
+}
+
 void GPMF::ACCL::printData(bool fullLists)
 {
     auto levelCount = std::count(path_.begin(), path_.end(), '/');

@@ -12,6 +12,7 @@ class UNIT : public klv
 {
 public:
     UNIT(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    UNIT(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

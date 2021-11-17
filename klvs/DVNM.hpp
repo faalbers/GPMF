@@ -11,6 +11,7 @@ class DVNM : public klv
 {
 public:
     DVNM(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    DVNM(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

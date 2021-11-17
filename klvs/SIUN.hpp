@@ -12,6 +12,7 @@ class SIUN : public klv
 {
 public:
     SIUN(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    SIUN(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);

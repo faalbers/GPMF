@@ -28,6 +28,7 @@ class ORIN : public klv
 {
 public:
     ORIN(std::string filePath, uint64_t filePos, std::string pathParent = "/");
+    ORIN(std::string &dataString, std::string pathParent = "/");
 
     void printData(bool fullLists = false);
     void printHierarchyData(bool fullLists = false);
