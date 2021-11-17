@@ -22,6 +22,7 @@ GPMF::TYPE::TYPE(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::TYPE::TYPE(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    type = dataString.substr(0, sampleSize * dataRepeat);
 }
 
 void GPMF::TYPE::printData(bool fullLists)
@@ -29,7 +30,7 @@ void GPMF::TYPE::printData(bool fullLists)
     auto levelCount = std::count(path_.begin(), path_.end(), '/');
     std::string dataIndent = std::string((levelCount)*5+1, ' ');
     std::cout << path_ << " ('" << dataType << "' " << sampleSize << " " << dataRepeat << ") : stream type" << std::endl;
-    std::cout << dataIndent << type << std::endl;
+    std::cout << dataIndent << getZeroTerminatedString(type) << std::endl;
 }
 
 void GPMF::TYPE::printHierarchyData(bool fullLists)

@@ -9,24 +9,54 @@
 
 GPMF::GPMF::GPMF(std::string fileName)
     : mp4parser_(std::make_shared<MP4::Parser>(fileName))
+    , udtaPayload_(nullptr)
 {
     #ifdef GPMF_PARSE_TIME
     auto start = std::chrono::high_resolution_clock::now();
     #endif
     
+    std::string GPMFdata;
+
     // get udta GPMF payload
-    auto GPMFdata = mp4parser_->getUserData("GPMF");
+    GPMFdata = mp4parser_->getUserData("GPMF");
     if ( GPMFdata == "" )
         error_("constructor can not find GPMF user data");
-    auto udtaPayload_ = klv::makeKlv_(GPMFdata);
-    udtaPayload_->printHierarchyData();
+    udtaPayload_ = klv::makeKlv_(GPMFdata);
 
     // get GPMF sample payloads
     auto GPMFtrack = mp4parser_->getTrack("gpmd");
-
     if ( GPMFtrack == nullptr )
-        throw std::runtime_error("GPMF: Can't find GPMF track in file !");
-    
+        error_("constructor can't find GPMF track in file !");
+
+    // find largest sample buffer size
+    size_t bufferSize = 0;
+    for ( auto sample : GPMFtrack->samples )
+        if ( sample.second.size > bufferSize ) bufferSize = sample.second.size;
+    auto buffer = new char[bufferSize];
+
+    DEVC *currentPayload = nullptr;
+    std::string filePath = "";
+    std::ifstream fileRead;
+    for ( auto sample : GPMFtrack->samples ) {
+        if ( sample.second.filePath != filePath ) {
+            filePath = sample.second.filePath;
+            if ( fileRead.is_open() ) fileRead.close();
+            fileRead.open(filePath, std::ios::binary);
+            if ( fileRead.fail() ) error_("constructer can not read file: "+filePath);
+        }
+        fileRead.seekg(sample.second.filePos, fileRead.beg);
+        fileRead.read((char *) buffer, (size_t) sample.second.size);
+        GPMFdata = std::string(buffer, (size_t) sample.second.size);
+        auto payload = klv::makeKlv_(GPMFdata);
+        //currentPayload = (DEVC *) payload.get();
+        //currentPayload->timeScale = GPMFtrack->mediaTimeScale;
+        //currentPayload->currentTime = sample.second.time;
+        //currentPayload->duration = sample.second.duration;
+        payloads_.push_back( payload );
+    }
+    if ( fileRead.is_open() ) fileRead.close();
+    delete[] buffer;
+/*
     DEVC *currentPayload = nullptr;
     for ( auto sample : GPMFtrack->samples ) {
         auto payload = klv::makeKlv_(sample.second.filePath, sample.second.filePos);
@@ -36,7 +66,7 @@ GPMF::GPMF::GPMF(std::string fileName)
         currentPayload->duration = sample.second.duration;
         payloads_.push_back( payload );
     }
-
+*/
     #ifdef GPMF_PARSE_TIME
     auto end = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -309,8 +339,16 @@ void GPMF::GPMF::printHierarchy()
 void GPMF::GPMF::printHierarchyData(bool fullLists)
 {
     int index = 1;
+    
+    if ( udtaPayload_ != nullptr ) {
+        std::cout << std::endl
+                << std::string(15, '-') << " GLOBAL " << index << " " << std::string(15, '-') << std::endl;
+        udtaPayload_->printHierarchyData();
+    }
+
     for ( auto payload : payloads_ ) {
-        std::cout << std::string(15, '-') << " PAYLOAD " << index << " " << std::string(15, '-') << std::endl;
+        std::cout << std::endl
+            << std::string(15, '-') << " PAYLOAD " << index << " " << std::string(15, '-') << std::endl;
         payload->printHierarchyData(fullLists);
         index++;
     }

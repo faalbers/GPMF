@@ -26,6 +26,14 @@ GPMF::SIUN::SIUN(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::SIUN::SIUN(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    //name = dataString.substr(0, sampleSize * dataRepeat);
+    std::string unit;
+    size_t stringOffset = 0;
+    for ( int index = 0 ; index < dataRepeat; index++ ) {
+        std::string unit = dataString.substr(stringOffset, sampleSize);
+        stringOffset += (size_t) sampleSize;
+        units.push_back(unit);
+    }
 }
 
 void GPMF::SIUN::printData(bool fullLists)
