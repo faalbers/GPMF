@@ -1,11 +1,6 @@
 #include "DEVC.hpp"
 #include <iostream>
 
-GPMF::DEVC::DEVC(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-}
-
 GPMF::DEVC::DEVC(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

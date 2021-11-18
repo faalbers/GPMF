@@ -48,25 +48,15 @@ GPMF::GPMF::GPMF(std::string fileName)
         fileRead.read((char *) buffer, (size_t) sample.second.size);
         GPMFdata = std::string(buffer, (size_t) sample.second.size);
         auto payload = klv::makeKlv_(GPMFdata);
-        //currentPayload = (DEVC *) payload.get();
-        //currentPayload->timeScale = GPMFtrack->mediaTimeScale;
-        //currentPayload->currentTime = sample.second.time;
-        //currentPayload->duration = sample.second.duration;
-        payloads_.push_back( payload );
-    }
-    if ( fileRead.is_open() ) fileRead.close();
-    delete[] buffer;
-/*
-    DEVC *currentPayload = nullptr;
-    for ( auto sample : GPMFtrack->samples ) {
-        auto payload = klv::makeKlv_(sample.second.filePath, sample.second.filePos);
         currentPayload = (DEVC *) payload.get();
         currentPayload->timeScale = GPMFtrack->mediaTimeScale;
         currentPayload->currentTime = sample.second.time;
         currentPayload->duration = sample.second.duration;
         payloads_.push_back( payload );
     }
-*/
+    if ( fileRead.is_open() ) fileRead.close();
+    delete[] buffer;
+
     #ifdef GPMF_PARSE_TIME
     auto end = std::chrono::high_resolution_clock::now();
     auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);

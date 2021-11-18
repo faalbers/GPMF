@@ -3,38 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::GPS5::GPS5(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( dataType != 'l' )
-        throw std::runtime_error("GPS5 klv wrong data type: "+std::string(1, dataType));
-    if ( sampleSize != 20 )
-        throw std::runtime_error("GPS5 klv wrong sample size: " + std::to_string(sampleSize));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("GPS5 klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-
-    int32_t val;
-    for ( int i = (int) dataRepeat; i > 0; i-- ) {
-        std::vector<int32_t> gpsEntry;
-        fileStream.read((char *) &val, sizeof(val));
-        gpsEntry.push_back(_byteswap_ulong(val));
-        fileStream.read((char *) &val, sizeof(val));
-        gpsEntry.push_back(_byteswap_ulong(val));
-        fileStream.read((char *) &val, sizeof(val));
-        gpsEntry.push_back(_byteswap_ulong(val));
-        fileStream.read((char *) &val, sizeof(val));
-        gpsEntry.push_back(_byteswap_ulong(val));
-        fileStream.read((char *) &val, sizeof(val));
-        gpsEntry.push_back(_byteswap_ulong(val));
-        samples.push_back(gpsEntry);
-    }
-
-    fileStream.close();
-}
-
 GPMF::GPS5::GPS5(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

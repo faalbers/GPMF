@@ -3,34 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::MTRX::MTRX(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( dataType != 'f' )
-        throw std::runtime_error("MTRX klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-    if ( (dataRepeat * sampleSize) != 36 )
-        throw std::runtime_error("MTRX klv has wrong size: " + std::to_string(dataRepeat * sampleSize));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("MTRX klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-
-    uint32_t intToFloat;
-    float matrixEntry;
-    for ( int i = 0 ; i < 3 ; i++ ) {
-        std::vector<float> row;
-        for ( int j = 0 ; j < 3 ; j++ ) {
-            fileStream.read((char *) &intToFloat, sizeof(intToFloat));
-            intToFloat = _byteswap_ulong(intToFloat);
-            matrixEntry = *((float *)&intToFloat);
-            matrix[i][j] = matrixEntry;
-        }
-    }
-    
-    fileStream.close();
-}
-
 GPMF::MTRX::MTRX(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

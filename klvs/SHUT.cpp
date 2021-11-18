@@ -3,29 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::SHUT::SHUT(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( dataType != 'f' )
-        throw std::runtime_error("SHUT klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("SHUT klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-    
-    for ( int i = (int) dataRepeat; i > 0; i-- ) {
-        uint32_t shutterSpeedInt;
-        float *shutterSpeed;
-        fileStream.read((char *) &shutterSpeedInt, sizeof(shutterSpeedInt));
-        shutterSpeedInt = _byteswap_ulong(shutterSpeedInt);
-        shutterSpeed = (float *)&shutterSpeedInt;
-        samples.push_back(*shutterSpeed);
-    }
-
-    fileStream.close();
-}
-
 GPMF::SHUT::SHUT(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

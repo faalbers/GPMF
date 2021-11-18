@@ -3,35 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::SCAL::SCAL(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( !(dataType == 's' || dataType == 'l') )
-        throw std::runtime_error("SCAL klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("SCAL klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-
-    if ( dataType == 's') {
-        int16_t denominator;
-        for ( int index = 0 ; index < dataRepeat; index++ ) {
-            fileStream.read((char *) &denominator, sizeof(denominator));
-            denominator = _byteswap_ushort(denominator);
-            denominators.push_back((int32_t) denominator);
-        }
-    } else if ( dataType == 'l') {
-        int32_t denominator;
-        for ( int index = 0 ; index < dataRepeat; index++ ) {
-            fileStream.read((char *) &denominator, sizeof(denominator));
-            denominator = _byteswap_ulong(denominator);
-            denominators.push_back((int32_t) denominator);
-        }
-    }
-    fileStream.close();
-}
-
 GPMF::SCAL::SCAL(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

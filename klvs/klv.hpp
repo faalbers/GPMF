@@ -12,7 +12,6 @@ namespace GPMF
 class klv
 {
 public:
-    klv(std::string filePath, uint64_t filePos, std::string pathParent = "/");
     klv(std::string &dataString, std::string pathParent = "/");
 
     template<typename T>
@@ -38,7 +37,6 @@ public:
 
 protected:
     friend class GPMF;
-    static std::shared_ptr<klv> makeKlv_(std::string filePath, int64_t nextFilePos, std::string pathParent = "/");
     static std::shared_ptr<klv> makeKlv_(std::string &dataString, std::string pathParent = "/");
     int                         nestLevel_(int level);
     void                        getKlvs_(std::string findKey, std::vector<std::shared_ptr<klv>> &found);

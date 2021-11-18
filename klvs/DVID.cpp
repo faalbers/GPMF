@@ -3,25 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::DVID::DVID(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( dataType != 'L' )
-        throw std::runtime_error("DVID klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-    if ( dataRepeat != 1 )
-        throw std::runtime_error("DVID klv has more then value: " + std::to_string(dataRepeat));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("DVID klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-    
-    fileStream.read((char *) &inTime, sizeof(inTime));
-    inTime = _byteswap_ulong(inTime);
-    
-    fileStream.close();
-}
-
 GPMF::DVID::DVID(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

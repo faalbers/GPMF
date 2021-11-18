@@ -2,11 +2,6 @@
 #include "../klvs.hpp"
 #include <iostream>
 
-GPMF::STRM::STRM(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-}
-
 GPMF::STRM::STRM(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {

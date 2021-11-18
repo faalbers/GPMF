@@ -3,25 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-GPMF::TICK::TICK(std::string filePath, uint64_t filePos, std::string pathParent)
-    : klv(filePath, filePos, pathParent)
-{
-    // throw an error if at one point they decide to change the data type
-    if ( dataType != 'L' )
-        throw std::runtime_error("TICK klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-    if ( dataRepeat != 1 )
-        throw std::runtime_error("TICK klv has more then value: " + std::to_string(dataRepeat));
-
-    std::ifstream fileStream(filePath, std::ios::binary);
-    if ( fileStream.fail() ) throw std::runtime_error("TICK klv can not parse file: "+filePath);
-    fileStream.seekg(fileDataPos_, fileStream.beg);
-    
-    fileStream.read((char *) &inTime, sizeof(inTime));
-    inTime = _byteswap_ulong(inTime);
-    
-    fileStream.close();
-}
-
 GPMF::TICK::TICK(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
