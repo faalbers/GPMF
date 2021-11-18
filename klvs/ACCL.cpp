@@ -43,7 +43,6 @@ GPMF::ACCL::ACCL(std::string &dataString, std::string pathParent)
     if ( sampleSize != 6 )
         error_("ACCL klv wrong sample size: " + std::to_string(sampleSize));
 
-    //inTime = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
     size_t stringOffset = 0;
     int16_t val;
     for ( int i = (int) dataRepeat; i > 0; i-- ) {

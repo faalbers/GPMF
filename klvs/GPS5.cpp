@@ -38,6 +38,33 @@ GPMF::GPS5::GPS5(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::GPS5::GPS5(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'l' )
+        error_("GPS5 klv wrong data type: "+std::string(1, dataType));
+    if ( sampleSize != 20 )
+        error_("GPS5 klv wrong sample size: " + std::to_string(sampleSize));
+
+    size_t stringOffset = 0;
+    int32_t val;
+    for ( int i = (int) dataRepeat; i > 0; i-- ) {
+        std::vector<int32_t> gpsEntry;
+        val = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        gpsEntry.push_back(val);
+        stringOffset += 4;
+        val = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        gpsEntry.push_back(val);
+        stringOffset += 4;
+        val = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        gpsEntry.push_back(val);
+        stringOffset += 4;
+        val = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        gpsEntry.push_back(val);
+        stringOffset += 4;
+        val = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        gpsEntry.push_back(val);
+        stringOffset += 4;
+        samples.push_back(gpsEntry);
+    }
 }
 
 void GPMF::GPS5::printData(bool fullLists)

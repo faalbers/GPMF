@@ -29,6 +29,18 @@ GPMF::SHUT::SHUT(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::SHUT::SHUT(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'f' )
+        error_("SHUT klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+
+    //inTime = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
+    size_t stringOffset = 0;
+    uint32_t shutterSpeedInt;
+    for ( int index = 0 ; index < dataRepeat; index++ ) {
+        shutterSpeedInt = _byteswap_ulong(*((uint32_t *) dataString.substr(stringOffset).c_str() ));
+        samples.push_back( *( (float *) &shutterSpeedInt ) );
+        stringOffset += 4;
+    }
 }
 
 void GPMF::SHUT::printData(bool fullLists)

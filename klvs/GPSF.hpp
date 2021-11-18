@@ -4,6 +4,10 @@
 #include <memory>
 #include "klv.hpp"
 
+/*
+Within the GPS stream: 0 - no lock, 2 or 3 - 2D or 3D Lock
+*/
+
 namespace GPMF
 {
 

@@ -38,8 +38,6 @@ GPMF::SCAL::SCAL(std::string &dataString, std::string pathParent)
     // throw an error if at one point they decide to change the data type
     if ( !(dataType == 's' || dataType == 'l') )
         error_("SCAL klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
-    if ( dataRepeat != 1 )
-        error_("SCAL klv has more then value: " + std::to_string(dataRepeat));
 
     //inTime = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
     size_t stringOffset = 0;

@@ -34,6 +34,24 @@ GPMF::MTRX::MTRX(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::MTRX::MTRX(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'f' )
+        error_("MTRX klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+    if ( (dataRepeat * sampleSize) != 36 )
+        error_("MTRX klv has wrong size: " + std::to_string(dataRepeat * sampleSize));
+
+    size_t stringOffset = 0;
+    uint32_t intToFloat;
+    float matrixEntry;
+    for ( int i = 0 ; i < 3 ; i++ ) {
+        std::vector<float> row;
+        for ( int j = 0 ; j < 3 ; j++ ) {
+            intToFloat = _byteswap_ulong(*((uint16_t *) dataString.substr(stringOffset).c_str() ));
+            matrixEntry = *((float *)&intToFloat);
+            matrix[i][j] = matrixEntry;
+            stringOffset += 4;
+        }
+    }
 }
 
 void GPMF::MTRX::printData(bool fullLists)
