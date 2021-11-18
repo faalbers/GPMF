@@ -64,11 +64,8 @@ std::string GPMF::klv::getZeroTerminatedString(std::string &dataString)
 void GPMF::klv::printHierarchy(int pathWith, int valLevel)
 {
     std::cout << std::setw(pathWith) << std::left << path_;
-    std::cout << "  |- " <<  std::setw(valLevel) << std::right << filePos_
-        << " -|- " << std::setw(valLevel) << fileDataPos_
-        << " -|- " << std::setw(valLevel) << fileNextPos_ << " -| "
-        << "( " << std::setw(valLevel) << dataSize_ << " )";
-    std::cout << std::endl;
+    std::cout << "  |- " <<  std::setw(valLevel) << std::right << dataSize_ << " -|"
+        << std::endl;
     for ( auto child : children_ )
         child->printHierarchy(pathWith, valLevel);
 }

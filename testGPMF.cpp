@@ -19,9 +19,9 @@ int main(int argc, char* argv[])
     std::cout << "\nCreate Time: " << ms_int.count() << "ms\n";
     std::cout << "**** TEST GPMF ****\n\n";
     
-    //gpmf.printHierarchy();
+    gpmf.printHierarchy();
     
-    gpmf.printHierarchyData();
+    //gpmf.printHierarchyData();
 
     if (false) {
         auto samples = gpmf.getGyroscope();
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    if (false) {
+    if (true) {
         //auto samples = gpmf.getAcceleration();
         auto samples = gpmf.getGyroscope();
         //auto samples = gpmf.getGPS();

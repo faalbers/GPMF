@@ -306,15 +306,16 @@ void GPMF::GPMF::printHierarchy()
 {
     int pathWith = nestLevel() * 5;
     int valWith = 10;
-    int lineWith = pathWith + valWith*5 + 13;
+    int lineWith = pathWith + valWith*1 + 8;
     int payloadWith = lineWith/2 - 5;
+
     std::cout << std::string(lineWith, '-') << std::endl;
     std::cout << std::setw(pathWith) << std::left << "<path>";
-    std::cout <<"  |- " << std::setw(valWith) << std::right << "<start>"
-        << " -|- " << std::setw(valWith) << "<data>"
-        << " -|- " << std::setw(valWith) << "<end>"
-        << " -| ( " << std::setw(valWith) << "<datasize>"
-        << " )\n";
+    std::cout <<"  |- " << std::setw(valWith) << std::right << "<datasize> -|\n";
+
+    std::cout << std::string(payloadWith+1, '-')
+        << " GLOBAL " << std::string(payloadWith+2, '-') << std::endl;
+    udtaPayload_->printHierarchy(pathWith, valWith);
 
     int index = 1;
     for ( auto payload : payloads_ ) {
