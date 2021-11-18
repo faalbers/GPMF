@@ -17,6 +17,7 @@ GPMF::TSMP::TSMP(std::string filePath, uint64_t filePos, std::string pathParent)
     fileStream.seekg(fileDataPos_, fileStream.beg);
     
     fileStream.read((char *) &totalSampleCount, sizeof(totalSampleCount));
+
     totalSampleCount = _byteswap_ulong(totalSampleCount);
     
     fileStream.close();
@@ -25,6 +26,13 @@ GPMF::TSMP::TSMP(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::TSMP::TSMP(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'L' )
+        error_("TSMP klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+    if ( dataRepeat != 1 )
+        error_("TSMP klv has more then value: " + std::to_string(dataRepeat));
+
+    totalSampleCount = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
 }
 
 void GPMF::TSMP::printData(bool fullLists)

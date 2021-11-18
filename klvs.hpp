@@ -10,6 +10,7 @@
     #include "klvs/DVID.hpp"
 */
     #include "klvs/DVNM.hpp"
+    #include "klvs/DVID.hpp"
     #include "klvs/STRM.hpp"
         #include "klvs/LINF.hpp"
         #include "klvs/CASN.hpp"

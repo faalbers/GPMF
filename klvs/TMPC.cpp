@@ -27,6 +27,15 @@ GPMF::TMPC::TMPC(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::TMPC::TMPC(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'f' )
+        error_("TMPC klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+    if ( dataRepeat != 1 )
+        error_("TMPC klv has more then value: " + std::to_string(dataRepeat));
+
+    uint32_t temperatureInt;
+    temperatureInt = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
+    temperature = *((float *)&temperatureInt);
 }
 
 void GPMF::TMPC::printData(bool fullLists)

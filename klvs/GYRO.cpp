@@ -37,6 +37,28 @@ GPMF::GYRO::GYRO(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::GYRO::GYRO(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 's' )
+        error_("GYRO klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+    if ( sampleSize != 6 )
+        error_("GYRO klv wrong sample size: " + std::to_string(sampleSize));
+
+    //inTime = _byteswap_ulong(*((uint32_t *) dataString.c_str()));
+    size_t stringOffset = 0;
+    int16_t val;
+    for ( int i = (int) dataRepeat; i > 0; i-- ) {
+        std::vector<int16_t> sample;
+        val = _byteswap_ushort(*((uint16_t *) dataString.substr(stringOffset).c_str() ));
+        sample.push_back(val);
+        stringOffset += 2;
+        val = _byteswap_ushort(*((uint16_t *) dataString.substr(stringOffset).c_str() ));
+        sample.push_back(val);
+        stringOffset += 2;
+        val = _byteswap_ushort(*((uint16_t *) dataString.substr(stringOffset).c_str() ));
+        sample.push_back(val);
+        stringOffset += 2;
+        samples.push_back(sample);
+    }
 }
 
 void GPMF::GYRO::printData(bool fullLists)

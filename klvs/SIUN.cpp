@@ -26,7 +26,10 @@ GPMF::SIUN::SIUN(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::SIUN::SIUN(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
-    //name = dataString.substr(0, sampleSize * dataRepeat);
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'c' )
+        error_("SIUN klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+
     std::string unit;
     size_t stringOffset = 0;
     for ( int index = 0 ; index < dataRepeat; index++ ) {

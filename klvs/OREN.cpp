@@ -22,6 +22,10 @@ GPMF::OREN::OREN(std::string filePath, uint64_t filePos, std::string pathParent)
 GPMF::OREN::OREN(std::string &dataString, std::string pathParent)
     : klv(dataString, pathParent)
 {
+    // throw an error if at one point they decide to change the data type
+    if ( dataType != 'c' )
+        error_("OREN klv wrong data type: "+std::string((char *)&dataType).substr(0,1));
+
     name = dataString.substr(0, sampleSize * dataRepeat);
 }
 
